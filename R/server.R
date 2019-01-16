@@ -42,6 +42,7 @@ shinyURL.server = function(session, options) {
 }
 
 
+
 .initFromURL = function(session, self) {
   queryValues <- isolate(parseQueryString(session$clientData$url_search, nested=TRUE))
   observe({
@@ -72,11 +73,17 @@ shinyURL.server = function(session, options) {
   }, priority = -99)
 }
 
-
+#' @export
 .initInputs = function(session, queryValues, inputValues) {
+  
+  qv<<- queryValues
+  iv<<- inputValues
   
   for (i in seq_along(queryValues)) {
     q = queryValues[[i]]
+   
+    #print("query values in shinyURL")
+    #print(q)
     
     q = if (is.list(q)) {
       ## checkbox group or multiple select
@@ -105,7 +112,8 @@ shinyURL.server = function(session, options) {
   }
 }
 
-
+#' @rdname shinyURL
+#' @export
 .encodeURL = function(session, inputId) {
   clientData = isolate(reactiveValuesToList(session$clientData))
   
@@ -162,7 +170,10 @@ shinyURL.server = function(session, options) {
     ## remove names of sublists before flattening
     names(inputValues)[sapply(inputValues, is.list)] = ""
     inputValues = unlist(inputValues)
-    
+    ##HACK: remove hot table app -----------
+    inputValues$hot_btable_fbapp_sbase <- NULL
+    ##--------------------------------------
+    #TODO inputValues remove hot_btable_fbapp_sbase id
     URLencode(paste(names(inputValues), inputValues, sep = "=", collapse = "&"))
   })
   
@@ -173,7 +184,11 @@ shinyURL.server = function(session, options) {
   }, priority = -999)
   
   url = reactive({
+    print(baseURL)
+    #print("reactive")
+    #print( paste(c(baseURL, queryString()), collapse = "?"))
     paste(c(baseURL, queryString()), collapse = "?")
+
   })
   
   url

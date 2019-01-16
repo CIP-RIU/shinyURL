@@ -22,4 +22,3 @@ The following functions are deprecated and will be made defunct; use
   \code{\link{shinyURL.server}}} \item{shinyURL.UI:
   \code{\link{shinyURL.ui}}} }
 }
-
